@@ -17,18 +17,23 @@ async function run() {
         await client.connect();
         const taskCollection = client.db('job_task').collection('tasks');
         app.get('/task', async (req, res) => {
+            console.log('query', req.query);
             const query = {};
             const cursor = taskCollection.find(query);
             const tasks = await cursor.toArray();
-            res.send(tasks);
+            res.send(tasks)
         })
+        app.post('/task', async (req, res) => {
+            console.log('task', req.body);
+            const task = req.body;
+            const result = await taskCollection.insertOne(task);
+            res.send(result);
+        });
     }
     finally {
-
     }
 }
 run().catch(console.dir);
-
 app.get('/', (req, res) => {
     res.send("Job Task")
 })
