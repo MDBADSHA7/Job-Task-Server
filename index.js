@@ -24,6 +24,29 @@ async function run() {
             const tasks = await cursor.toArray();
             res.send(tasks)
         })
+        //Edit Task
+
+        app.put('/task/:id', async (req, res) => {
+            const id = req.params.id;
+            const updatedTask = req.body;
+            const filter = { _id: ObjectId(id) };
+            const options = { upsert: true };
+            const updatedDoc = {
+                $set: {
+                    name: updatedTask.task,
+                }
+            };
+            const result = await taskCollection.updateOne(filter, updatedDoc, options);
+            res.send(result);
+        })
+
+        app.get('/task/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await taskCollection.findOne(query);
+            res.send(result);
+        })
+        //POST
         app.post('/task', async (req, res) => {
             console.log('task', req.body);
             const task = req.body;
